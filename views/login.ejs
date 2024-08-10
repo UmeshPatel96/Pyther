@@ -1,0 +1,41 @@
+
+<!-- update views/login.ejs -->
+<!-- ------ -->
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+  integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+  crossorigin="anonymous"></script>
+  </head>
+  <body>
+  	<script type="text/javascript">
+  		var doLogin = function(){
+  			var username = $("#username").val();
+  			var pass = $("#password").val();
+  			var data = {username:username, password:pass};
+  			$.ajax({
+			    url : "/users/authenticate",
+			    type: "POST",
+			    data : data,
+			    success: function(data, textStatus, jqXHR) {
+			    	if(data.result == "success"){
+			    		location = "/dashboard";
+			    	}else{			    		
+  						alert("username or password is incorrect");
+  					}
+			    },
+			    error: function (jqXHR, textStatus, errorThrown){
+			    	alert("Unable to connect remote server..");
+			    }
+			});
+        }
+  	</script>
+    <h1><%= title %></h1>
+    <input id="username" class="form-control border border-dark" type="" placeholder="username" name=""> <br/><br/>
+    <input id="password" class="form-control border border-dark" type="password" placeholder="password" name=""> <br/><br/>
+    <input type="button" class="btn btn-primary btn-block mt-3" placeholder="username" name="" onclick="doLogin()" value="login">
+  </body>
+</html>

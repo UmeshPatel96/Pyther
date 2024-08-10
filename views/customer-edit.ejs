@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>
+    <%= title %>
+  </title>
+  <link rel='stylesheet' href='/stylesheets/style.css' />
+  <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+    integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+</head>
+
+<body>
+  <script type="text/javascript">
+    var updateCustomer = function () {
+      var id = $("#id").val();
+      var name = $("#name").val();
+      var email = $("#email").val();
+      var phone = $("#phone").val();
+      var address = $("#address").val();
+      var data = { id, name, email, phone, address };
+      fetch(`/api/customer/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify(data)
+      })
+        .then(response => response.json())
+        .then(function (response) {
+          if (response.result == "success") {
+            location = "/customer";
+          }
+        });
+    }
+  </script>
+  <h1>
+    <%= title %>
+  </h1>
+  <input id="id" type="" placeholder="id" value="<%= customer._id %>" name="" readonly> <br /><br />
+  <input id="name" type="" placeholder="Name" value="<%= customer.name %>" name=""> <br /><br />
+  <input id="email" type="" placeholder="Email" value="<%= customer.email %>" name=""> <br /><br />
+  <input id="phone" type="" placeholder="Phone" value="<%= customer.phone %>" name=""> <br /><br />
+  <input id="address" type="" placeholder="Address" value="<%= customer.address %>" name=""> <br /><br />
+  <input type="button" name="" onclick="updateCustomer()" value="Upate">
+</body>
+
+</html>

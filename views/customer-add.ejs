@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      var addCustomer = function(){
+        var name = $("#name").val();
+        var email = $("#email").val();
+        var phone = $("#phone").val();
+        var address = $("#address").val();
+        var data = {name,email,phone,address};
+        fetch('/api/customer'
+        ,{
+          method: 'POST',
+          headers : { 
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+           },
+          body:JSON.stringify(data)
+        })
+        .then(response => response.json())
+        .then(function(response){
+          if(response.result == "success"){
+            location = "/customer";
+          }
+      });
+      }
+    </script>
+    <h1><%= title %></h1>
+    <input id="name" type="" placeholder="Name" name=""> <br/><br/>
+    <input id="email" type="" placeholder="Email" name=""> <br/><br/>
+    <input id="phone" type="" placeholder="Phone" name=""> <br/><br/>
+    <input id="address" type="" placeholder="Address" name=""> <br/><br/>
+    <input type="button" name="" onclick="addCustomer()" value="Add">
+  </body>
+</html>

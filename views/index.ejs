@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+  </head>
+  <body>
+  	<script type="text/javascript">
+      // debugger;
+  		goLocation = function(nextLocation){
+        localStorage.setItem("page", 1);
+  			location = "/"+nextLocation;
+  		}
+  	</script>
+    <h1><%= title %></h1>
+    <button onclick="goLocation('dashboard')">Dasboard</button> | 
+    <button onclick="goLocation('customer')">Customers</button> | 
+    <button onclick="goLocation('student?page=1&limit=5')">Student</button> | 
+    <button onclick="goLocation('about')">About</button> | 
+    <button onclick="goLocation('login')">logout</button> | 
+    <%= name %>
+    <hr/>
+    <p>Welcome to <%= title %></p>
+  </body>
+</html>

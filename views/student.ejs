@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>
+        <%= title %>
+    </title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/stylesheets/style.css" />
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+
+</head>
+
+<body>
+    <script type="text/javascript">
+        const goLocation = function (nextLocation) {
+            location = "/" + nextLocation;
+        }
+
+        const sortStudent = (sortField, sortOrder) => {
+            let page = localStorage.getItem('page') || 1;
+            let limit = 5;
+            location = `/student/sort/${sortField}/${sortOrder}?page=${page}&limit=${limit}`;
+        };
+
+        const doSearch = function () {
+            const field = $("#field").val();
+            const searchTxt = $('#searchTxt').val();
+            if (searchTxt.length < 1) {
+                location = "/student";
+            } else {
+                location = "/student/" + field + "/" + searchTxt;
+            }
+        }
+
+        const doEdit = (_id) => {
+            location = "/student/edit/" + _id;
+        }
+
+        const doDelete = (_id) => {
+            fetch(`/api/student/${_id}`, {
+                method: 'DELETE',
+            }).then(response => response.json())
+                .then(function (response) {
+                    if (response.result === "success") {
+                        location = "/student";
+                    }
+                });
+        }
+
+        // Pagination logic
+        const defaultPage = 1;
+        const limit = 5;
+
+        if (!localStorage.getItem("page")) {
+            localStorage.setItem("page", defaultPage);
+        }
+
+        const setCurrentPage = (page) => {
+            localStorage.setItem("page", page);
+        };
+
+        const changePage = (direction) => {
+            let currentPage = parseInt(localStorage.getItem("page"), 10);
+            currentPage += direction;
+            if (currentPage < 1) {
+                currentPage = 1;
+            }
+
+            setCurrentPage(currentPage);
+            doPagination(currentPage, limit);
+        };
+
+        const doPagination = (page, limit) => {
+            location.href = `/student?page=${page}&limit=${limit}`;
+        };
+    </script>
+    <div class="container mt-4">
+        <h1 class="mb-4">
+            <%= title %>
+        </h1>
+        <div class="btn-group mb-4" role="group">
+            <button class="btn btn-primary" onclick="goLocation('dashboard')">Dashboard</button>
+            <button class="btn btn-primary" onclick="goLocation('customer')">Customers</button>
+            <button class="btn btn-primary" onclick="goLocation('student?page=1&limit=5')">Student</button>
+            <button class="btn btn-primary" onclick="goLocation('about')">About</button>
+            <button class="btn btn-danger" onclick="goLocation('login')">Logout</button>
+        </div>
+        <p>Welcome to <%= title %>, <%= name %>
+        </p>
+        <button class="btn btn-success mb-4" onclick="goLocation('student/add')">Add</button>
+        <div class="input-group mb-4">
+            <input id="searchTxt" type="text" class="form-control" placeholder="Search">
+            <select id="field" class="form-control">
+                <option value="name">Name</option>
+                <option value="total">Total</option>
+            </select>
+            <div class="input-group-append">
+                <button class="btn btn-primary" onclick="doSearch()">Search</button>
+            </div>
+        </div>
+        <div class="page-data">
+            <div class="data-table">
+                <table class="table table-bordered">
+                    <thead class="thead-dark">
+                        <tr>
+                            <% if (sort==="asc" ) { %>
+                                <th scope="col" onclick="sortStudent('name', 'desc')">Name &#9650;</th>
+                                <% } else if (sort==="desc" ) { %>
+                                    <th scope="col" onclick="sortStudent('name', 'normal')">Name &#9660;</th>
+                                    <% } else { %>
+                                        <th scope="col" onclick="sortStudent('name', 'asc')">Name —</th>
+                                        <% } %>
+                                            <th>Roll no</th>
+                                            <th>Maths</th>
+                                            <th>Science</th>
+                                            <th>English</th>
+                                            <th>Total</th>
+                                            <th>Percentage</th>
+                                            <th>Rank</th>
+                                            <th>Edit</th>
+                                            <th>Delete</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% data.forEach(function(student) { %>
+                            <tr>
+                                <td>
+                                    <%= student.name %>
+                                </td>
+                                <td>
+                                    <%= student.roll_no %>
+                                </td>
+                                <td>
+                                    <%= student.maths %>
+                                </td>
+                                <td>
+                                    <%= student.science %>
+                                </td>
+                                <td>
+                                    <%= student.english %>
+                                </td>
+                                <td>
+                                    <%= student.total %>
+                                </td>
+                                <td>
+                                    <%= student.percentage %>
+                                </td>
+                                <td>
+                                    <%= student.rank %>
+                                </td>
+                                <td><button class="btn btn-warning" onclick="doEdit('<%= student._id %>')">Edit</button>
+                                </td>
+                                <td><button class="btn btn-danger"
+                                        onclick="doDelete('<%= student._id %>')">Delete</button></td>
+                            </tr>
+                            <% }); %>
+                    </tbody>
+                </table>
+            </div>
+            <nav aria-label="Page navigation">
+                <ul class="pagination justify-content-center">
+                    <% if (currentPage> 1) { %>
+                        <li class="page-item">
+                            <a class="page-link" href="javascript:void(0);" onclick="changePage(-1)">Previous</a>
+                        </li>
+                        <% } %>
+                            <li class="page-item disabled">
+                                <span class="page-link">Page <%= currentPage %> of <%= totalPages %></span>
+                            </li>
+                            <% if (currentPage < totalPages) { %>
+                                <li class="page-item">
+                                    <a class="page-link" href="javascript:void(0);" onclick="changePage(1)">Next</a>
+                                </li>
+                                <% } %>
+                </ul>
+            </nav>
+
+        </div>
+    </div>
+</body>
+
+</html>

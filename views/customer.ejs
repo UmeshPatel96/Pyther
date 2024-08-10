@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      goLocation = function(nextLocation){
+        localStorage.setItem("page", 1);
+        location = "/"+nextLocation;
+      }
+
+      const doSearch = function(){
+        var field = $("#field").val();
+        var searchTxt = $('#searchTxt').val();
+        if(searchTxt.length < 1){
+          location = "/customer";
+        }else{
+          location = "/customer/"+searchTxt;
+        }
+      }
+
+      const doEdit = (_id) => {
+        location = "/customer/edit/"+_id;
+
+      }
+
+      const doDelete = (_id) => {
+      fetch(`/api/customer/${_id}`
+        , {
+          method: 'DELETE',
+          // headers : { 
+          //   'Content-Type': 'application/json',
+          //   'Accept': 'application/json'
+        // },
+          // body:JSON.stringify({id})
+        }).then(response => response.json())
+      .then(function (response) {
+        if (response.result == "success") {
+          location = "/customer";
+        }
+      });
+    }
+    </script>
+    <h1><%= title %></h1>
+    <button onclick="goLocation('dashboard')">Dasboard</button> | 
+    <button onclick="goLocation('customer')">Customers</button> | 
+    <button onclick="goLocation('student?page=1&limit=5')">Student</button> | 
+    <button onclick="goLocation('about')">About</button> | 
+    <button onclick="goLocation('login')">logout</button> | 
+    <%= name %>
+    <hr/>
+    <br>
+    <button onclick="goLocation('customer/add')">Add</button>
+
+    <input id="searchTxt" type="" name="">
+    <select id="field">
+      <option value="_id">id</option>
+      <option value="name">Name</option>
+      <option value="email">Email</option>
+      <option value="address">Address</option>
+      <option value="phone">Phone</option>
+    </select>
+    <button onclick="doSearch()">Search</button> 
+    <p>Welcome to <%= title %></p>
+    <div class="page-data">
+         <div class="data-table">
+            <table border="1" cellpadding="7" cellspacing="7">
+                <tr>
+                    <th width="20px">No</th>
+                    <th width="250px">Name</th>
+                    <th width="220px">Email</th>
+                    <th width="100px">Phone</th>
+                    <th width="300px">Address</th>
+                    <th>Edit</th>
+                    <th>Delete</th>
+                </tr>
+                <% if(data.length){for(var i = 0;i < data.length;i++) { %>       
+                <tr>
+                    <td><%=data[i]._id%></td>
+                    <td><%=data[i].name%></td>
+                    <td><%=data[i].email%></td>
+                    <td><%=data[i].phone%></td>
+                    <td><%=data[i].address%></td>
+                    <td><button onclick="doEdit('<%=data[i]._id%>');" >Edit</button></td>
+                    <td><button onclick="doDelete('<%=data[i]._id %>');">Delete</button></td>
+                </tr>
+            <% }
+             }else{ %>
+                 <tr>
+                    <td colspan="7">No customer found</td>
+                 </tr>
+            <% } %> 
+            </table>
+         </div>
+        </div>
+  </body>
+</html>

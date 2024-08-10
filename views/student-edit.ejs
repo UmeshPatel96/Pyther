@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>
+    <%= title %>
+  </title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel='stylesheet' href='/stylesheets/style.css' />
+  <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+    integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+  <div class="container mt-4">
+    <h1 class="mb-4">
+      <%= title %>
+    </h1>
+    <div class="form-group">
+      <label for="id">ID</label>
+      <input id="id" type="text" class="form-control" placeholder="id" value="<%= student._id %>" readonly>
+    </div>
+    <div class="form-group">
+      <label for="name">Name</label>
+      <input id="name" type="text" class="form-control" placeholder="Name" value="<%= student.name %>">
+    </div>
+    <div class="form-group">
+      <label for="roll_no">Roll Number</label>
+      <input id="roll_no" type="number" class="form-control" placeholder="Roll Number" value="<%= student.roll_no %>">
+    </div>
+    <div class="form-group">
+      <label for="maths">Maths</label>
+      <input id="maths" type="number" class="form-control" placeholder="Maths" value="<%= student.maths %>">
+    </div>
+    <div class="form-group">
+      <label for="science">Science</label>
+      <input id="science" type="number" class="form-control" placeholder="Science" value="<%= student.science %>">
+    </div>
+    <div class="form-group">
+      <label for="english">English</label>
+      <input id="english" type="number" class="form-control" placeholder="English" value="<%= student.english %>">
+    </div>
+    <button type="button" class="btn btn-primary" onclick="updatestudent()">Update</button>
+  </div>
+
+  <script type="text/javascript">
+    var updatestudent = function () {
+      var id = $("#id").val();
+      var name = $("#name").val();
+      var roll_no = $("#roll_no").val();
+      var maths = parseFloat($("#maths").val());
+      var science = parseFloat($("#science").val());
+      var english = parseFloat($("#english").val());
+      var total = maths + science + english;
+      var percentage = ((total / 300) * 100);
+      var rank = null
+      var data = { id, name, roll_no, maths, science, english, total, percentage };
+      fetch(`/api/student/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify(data)
+      })
+        .then(response => response.json())
+        .then(function (response) {
+          if (response.result == "success") {
+            location = "/student?page=1&limit=5";
+            console.log("clicked");
+          }
+        });
+    }
+  </script>
+</body>
+
+</html>
